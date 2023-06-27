@@ -137,5 +137,7 @@ dmypy.json
 
 vectorstore.pkl
 langchain.readthedocs.io/
-staging/excel/*.*
-staging/pdf/*.*
+staging/excel/*
+!staging/excel/LP_Key_facts.xlsx
+staging/pdf/*
+!staging/pdf/TheLittlePrince.pdf
