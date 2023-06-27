@@ -2,29 +2,56 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Chat Your Data</title>
+    <title>JeevesGPT: Chat With Your Data</title>
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .chat-body {
-            width: 550px;
-            margin: 50px auto;
+            margin: 50px auto 0;
+            width: 75vw;
+            height: 65vh;
+            background: #070809;
+            border-radius: 0.5rem;
+            border: 1px solid #30373d;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
         .card-body {
-            background-color: #333;
-            color: #fff;
-            border-radius: 10px;
+            color: snow;
+            width: 100%;
+            height: 100%;
+            overflow-y: scroll;
+            border-radius: 0.5rem
+        }
+        .chat-input{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            flex-direction: column;
         }
         .server-message {
-            background-color: #444;
-            padding: 10px;
-            margin: 10px;
-            border-radius: 10px;
+            background: #141619;
+            padding: 1.5rem;
+            color: #ececf1;
+            animation: Home_fadein__CBLON .5s;
+                animation-duration: 0.5s;
+                animation-timing-function: ease;
+                animation-delay: 0s;
+                animation-iteration-count: 1;
+            animation-direction: normal;
+            animation-fill-mode: none;
+            animation-play-state: running;
+            animation-name: Home_fadein__CBLON;
         }
         .client-message {
-            background-color: #555;
-            padding: 10px;
-            margin: 10px;
-            border-radius: 10px;
+            background: #070809;
+            padding: 1.5rem;
+            color: #ececf1;
+            box-sizing: border-box;
+            font-family: Inter,sans-serif;
+
         }
         .form-inline {
             display: flex;
@@ -49,6 +76,41 @@
         .form-message {
           margin-top: 10px;
         }
+        .Home_generatebutton {
+            position: absolute;
+            top: 0.7rem;
+            right: 1rem;
+            color: #a5a2a2;
+            background: none;
+            padding: 0.3rem;
+            border: none;
+            display: flex;
+        }
+        .Home_svgicon {
+            transform: rotate(90deg);
+            width: 1.5em;
+            height: 1.5em;
+            fill: currentColor;
+        }
+        .Home_textarea {
+            position: relative;
+            resize: none;
+            font-size: 1.1rem;
+            padding: 1rem 2rem;
+            width: 75vw;
+            border-radius: 0.5rem;
+            border: 1px solid #30373d;
+            background: #070809;
+            color: #ececf1;
+            outline: none;
+        }
+        .icons {
+            color: transparent;
+            display: inline;
+            margin-right: 0.5em;
+            width: 30px;
+            height: 30px;
+        }
     </style>
     <script>
         var endpoint = "ws://localhost:9000/chat";
@@ -63,18 +125,21 @@
                     header.innerHTML = "Computing answer...";
                     var div = document.createElement('div');
                     div.className = 'server-message';
-                    var p = document.createElement('p');
-                    p.innerHTML = "<strong>" + "Chatbot: " + "</strong>";
-                    div.appendChild(p);
+                    var img = document.createElement('img');
+                    img.src ="static/jeeves.png";
+                    img.className="icons";
+                    div.appendChild(img);
+                    var span = document.createElement('span');
+                    div.appendChild(span);
                     messages.appendChild(div);
                 } else if (data.type === "stream") {
                     var header = document.getElementById('header');
                     header.innerHTML = "Chatbot is typing...";
-                    var p = messages.lastChild.lastChild;
+                    var span = messages.lastChild.lastChild;
                     if (data.message === "\n") {
-                        p.innerHTML += "<br>";
+                        span.innerHTML += "<br>";
                     } else {
-                        p.innerHTML += data.message;
+                        span.innerHTML += data.message;
                     }
                 } else if (data.type === "info") {
                     var header = document.getElementById('header');
@@ -83,22 +148,25 @@
                     var header = document.getElementById('header');
                     header.innerHTML = "Ask a question";
                     var button = document.getElementById('send');
-                    button.innerHTML = "Send";
-                    button.disabled = false;
+                    //button.innerHTML = "Send";
+                    //button.disabled = false;
                 } else if (data.type === "error") {
                     var header = document.getElementById('header');
                     header.innerHTML = "Ask a question";
                     var button = document.getElementById('send');
-                    button.innerHTML = "Send";
-                    button.disabled = false;
+                    //button.innerHTML = "Send";
+                    //button.disabled = false;
                     var p = messages.lastChild.lastChild;
                     p.innerHTML += data.message;
                 }
             } else {
                 var div = document.createElement('div');
                 div.className = 'client-message';
-                var p = document.createElement('p');
-                p.innerHTML = "<strong>" + "You: " + "</strong>";
+                var img = document.createElement('img');
+                img.src ="static/user.png";
+                img.className="icons";
+                div.appendChild(img);
+                var p = document.createElement('span');
                 p.innerHTML += data.message;
                 div.appendChild(p);
                 messages.appendChild(div);
@@ -118,22 +186,37 @@
 
             // Turn the button into a loading button
             var button = document.getElementById('send');
-            button.innerHTML = "Loading...";
-            button.disabled = true;
+            //button.innerHTML = "Loading...";
+            //button.disabled = true;
         }
     </script>
 </head>
 <body class="bg-black">
-    <div class="chat-body card">
-        <div class="card-body p-5">
-            <h4 class="card-title text-center text-xl font-medium"> Chat Your Data </h4>
-            <p class="card-text text-center text-sm" id="header"> Ask a question </p>
-            <hr class="border-gray-500 mb-5" style="margin-top: 20px;">
-            <div id="messages" class="overflow-auto" style="max-height: 500px;">
+    <div style="color: snow; padding-top: 1.5em;">
+        <h4 class="card-title text-center text-xl font-medium"> JeevesGPT </h4>
+        <p class="card-text text-center text-sm" id="header"> Ask a question </p>
+        <hr class="border-gray-500 mb-5" style="margin-top: 20px;">
+    </div>
+    <div class="chat-body">
+        <div class="card-body">
+
+            <div id="messages" style="max-height: 500px; overflow-y: scroll;">
+                <div class="server-message">
+                    <img alt="AI" src="static/jeeves.png" class="icons"/>
+                    <span>Hi there! How can I help?</span>
+                </div>
             </div>
-            <form action="" class="form-inline mt-5" id="chat-form" onsubmit="sendMessage(event)">
-                <input type="text" class="form-control" placeholder="Write your question" id="messageText">
-                <button id="send" type="submit" class="btn btn-primary">Send</button>
+        </div>
+    </div>
+    <div class="chat-input mt-5">
+        <div style="position: relative;">
+            <form action="" class="form-inline" id="chat-form" onsubmit="sendMessage(event)">
+                <input type="text" class="Home_textarea" id="messageText" placeholder="Type your question..."  spellcheck="false" autocomplete="off">
+                <button type="submit" class="Home_generatebutton">
+                    <svg viewBox="0 0 20 20" class="Home_svgicon" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path> 
+                    </svg>
+                </button>
             </form>
         </div>
     </div>

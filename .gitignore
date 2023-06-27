@@ -137,3 +137,5 @@ dmypy.json
 
 vectorstore.pkl
 langchain.readthedocs.io/
+staging/excel/*.*
+staging/pdf/*.*
